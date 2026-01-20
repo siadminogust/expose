@@ -80,8 +80,8 @@ class Mongo extends \Expose\Queue
     public function markProcessed($id)
     {
         return $this->getCollection()->update(
-            array('_id' => $id),
-            array('$set' => array('processed' => true))
+            ['_id' => $id],
+            ['$set' => ['processed' => true]]
         );
     }
 
@@ -93,7 +93,7 @@ class Mongo extends \Expose\Queue
     public function getPending($limit = 10)
     {
         $results = $this->getCollection()
-            ->find(array('processed' => false))
+            ->find(['processed' => false])
             ->limit($limit);
 
         return iterator_to_array($results);

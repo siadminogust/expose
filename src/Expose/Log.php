@@ -10,15 +10,15 @@ abstract class Log implements LoggerInterface
 
 	protected $resource = null;
 
-	public abstract function emergency($message, array $context = array());
-	public abstract function alert($message, array $context = array());
-	public abstract function critical($message, array $context = array());
-	public abstract function error($message, array $context = array());
-	public abstract function warning($message, array $context = array());
-	public abstract function notice($message, array $context = array());
-	public abstract function info($message, array $context = array());
-	public abstract function debug($message, array $context = array());
-	public abstract function log($level, $message, array $context = array());
+	public abstract function emergency($message, array $context = []): void;
+	public abstract function alert($message, array $context = []): void;
+	public abstract function critical($message, array $context = []): void;
+	public abstract function error($message, array $context = []): void;
+	public abstract function warning($message, array $context = []): void;
+	public abstract function notice($message, array $context = []): void;
+	public abstract function info($message, array $context = []): void;
+	public abstract function debug($message, array $context = []): void;
+	public abstract function log($level, \Stringable|string $message, array $context = []): void;
 
     /**
      * Set the logger object instance

@@ -2,7 +2,11 @@
 
 namespace Expose\Log;
 
-class Mongo extends \Expose\Log
+use Expose\Log;
+use Monolog\Handler\MongoDBHandler;
+use Monolog\Logger;
+
+class Mongo extends Log
 {
     /**
      * Database collection
@@ -99,11 +103,10 @@ class Mongo extends \Expose\Log
      *
      * @param string $message Log message
      * @param array $context Extra contact information
-     * @return boolean Log pass/fail
      */
-    public function emergency($message, array $context = array())
+    public function emergency($message, array $context = []): void
     {
-        return $this->log('emergency', $message, $context);
+        $this->log('emergency', $message, $context);
     }
 
     /**
@@ -111,11 +114,10 @@ class Mongo extends \Expose\Log
      *
      * @param string $message Log message
      * @param array $context Extra contact information
-     * @return boolean Log pass/fail
      */
-    public function alert($message, array $context = array())
+    public function alert($message, array $context = []): void
     {
-        return $this->log('alert', $message, $context);
+        $this->log('alert', $message, $context);
     }
 
     /**
@@ -123,11 +125,10 @@ class Mongo extends \Expose\Log
      *
      * @param string $message Log message
      * @param array $context Extra contact information
-     * @return boolean Log pass/fail
      */
-    public function critical($message, array $context = array())
+    public function critical($message, array $context = []): void
     {
-        return $this->log('critical', $message, $context);
+        $this->log('critical', $message, $context);
     }
 
     /**
@@ -135,11 +136,10 @@ class Mongo extends \Expose\Log
      *
      * @param string $message Log message
      * @param array $context Extra contact information
-     * @return boolean Log pass/fail
      */
-    public function error($message, array $context = array())
+    public function error($message, array $context = []): void
     {
-        return $this->log('error', $message, $context);
+        $this->log('error', $message, $context);
     }
 
     /**
@@ -147,11 +147,10 @@ class Mongo extends \Expose\Log
      *
      * @param string $message Log message
      * @param array $context Extra contact information
-     * @return boolean Log pass/fail
      */
-    public function warning($message, array $context = array())
+    public function warning($message, array $context = []): void
     {
-        return $this->log('warning', $message, $context);
+        $this->log('warning', $message, $context);
     }
 
     /**
@@ -159,11 +158,10 @@ class Mongo extends \Expose\Log
      *
      * @param string $message Log message
      * @param array $context Extra contact information
-     * @return boolean Log pass/fail
      */
-    public function notice($message, array $context = array())
+    public function notice($message, array $context = []): void
     {
-        return $this->log('notice', $message, $context);
+        $this->log('notice', $message, $context);
     }
 
     /**
@@ -171,11 +169,10 @@ class Mongo extends \Expose\Log
      *
      * @param string $message Log message
      * @param array $context Extra contact information
-     * @return boolean Log pass/fail
      */
-    public function info($message, array $context = array())
+    public function info($message, array $context = []): void
     {
-        return $this->log('info', $message, $context);
+        $this->log('info', $message, $context);
     }
 
     /**
@@ -183,11 +180,10 @@ class Mongo extends \Expose\Log
      *
      * @param string $message Log message
      * @param array $context Extra contact information
-     * @return boolean Log pass/fail
      */
-    public function debug($message, array $context = array())
+    public function debug($message, array $context = []): void
     {
-        return $this->log('debug', $message, $context);
+        $this->log('debug', $message, $context);
     }
 
     /**
@@ -196,13 +192,12 @@ class Mongo extends \Expose\Log
      * @param string $level Logging level (ex. info, debug, notice...)
      * @param string $message Log message
      * @param array $context Extra context information
-     * @return boolean Success/fail of logging
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = []): void
     {
-        $logger = new \Monolog\Logger('audit');
+        $logger = new Logger('audit');
         try {
-            $handler = new \Monolog\Handler\MongoDBHandler(
+            $handler = new MongoDBHandler(
                 new \Mongo($this->getConnectString()),
                 $this->getDbName(),
                 $this->getDbCollection()
@@ -216,6 +211,6 @@ class Mongo extends \Expose\Log
             return $record;
         });
 
-        return $logger->$level($message, $context);
+        $logger->$level($message, $context);
     }
 }

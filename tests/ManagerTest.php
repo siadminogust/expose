@@ -1,11 +1,19 @@
 <?php
 
-namespace Expose;
+namespace Tests\Expose;
+
+use Expose\DataCollection;
+use Expose\Exception\QueueNotDefined;
+use Expose\Filter;
+use Expose\FilterCollection;
+use Expose\Log\Mongo;
+use Expose\Manager;
+use PHPUnit\Framework\TestCase;
 
 require_once 'MockLogger.php';
 require_once 'MockQueue.php';
 
-class ManagerTest extends \PHPUnit_Framework_TestCase
+class ManagerTest extends TestCase
 {
     private $manager = null;
     private $sampleFilters = array(
@@ -18,20 +26,20 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         ),
     );
 
-    public function setUp()
+    public function setUp(): void
     {
-        $logger = new \Expose\Log\Mongo();
-        $filters = new \Expose\FilterCollection();
-        $this->manager = new \Expose\Manager($filters, $logger);
+        $logger = new Mongo();
+        $filters = new FilterCollection();
+        $this->manager = new Manager($filters, $logger);
     }
 
     public function executeFilters($data, $queue = false, $notify = false)
     {
-        $filterCollection = new \Expose\FilterCollection();
+        $filterCollection = new FilterCollection();
         $filterCollection->setFilterData($this->sampleFilters);
 
         $logger = new MockLogger();
-        $manager = new \Expose\Manager($filterCollection, $logger);
+        $manager = new Manager($filterCollection, $logger);
         $manager->setConfig(array('test' => 'foo'));
         $manager->run($data, $queue, $notify);
 
@@ -47,7 +55,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSetFilters()
     {
-        $filters = new \Expose\FilterCollection();
+        $filters = new FilterCollection();
         $filters->setFilterData($this->sampleFilters);
 
         $this->manager->setFilters($filters);
@@ -71,7 +79,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager->setData($data);
         $getData = $this->manager->getData();
         $this->assertTrue(
-            $getData instanceof \Expose\DataCollection
+            $getData instanceof DataCollection
         );
     }
 
@@ -127,11 +135,11 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $filterCollection = new \Expose\FilterCollection();
+        $filterCollection = new FilterCollection();
         $filterCollection->setFilterData($this->sampleFilters);
 
         $logger = new MockLogger();
-        $manager = new \Expose\Manager($filterCollection, $logger);
+        $manager = new Manager($filterCollection, $logger);
         $manager->setImpactLimit(1);
         $manager->setConfig(array('test' => 'foo'));
         $manager->run($data, false, false);
@@ -273,7 +281,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testExceptionIsIgnored()
     {
-        $filterCollection = new \Expose\FilterCollection();
+        $filterCollection = new FilterCollection();
         $filterCollection->setFilterData($this->sampleFilters);
 
         $logger = new MockLogger();
@@ -303,7 +311,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testExceptionWildcardIsIgnored()
     {
-        $filterCollection = new \Expose\FilterCollection();
+        $filterCollection = new FilterCollection();
         $filterCollection->setFilterData($this->sampleFilters);
 
         $logger = new MockLogger();
@@ -329,7 +337,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSetQueue()
     {
-        $queue = new \Expose\Queue\MockQueue();
+        $queue = new MockQueue();
 
         $this->manager->setQueue($queue);
         $this->assertEquals(
@@ -347,6 +355,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUndefinedQueue()
     {
+        $this->expectException(QueueNotDefined::class);
         $queue = $this->manager->getQueue();
     }
 
@@ -369,14 +378,14 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testThresholdLowerThenImpact() {
 
-        $filter = new \Expose\Filter();
+        $filter = new Filter();
         $filter->setImpact(100);
 
-        $collection   = new \Expose\FilterCollection();
+        $collection   = new FilterCollection();
         $collection->addFilter($filter);
 
         $manager_mock = $this->getMockBuilder('\\Expose\\Manager')
-            ->setConstructorArgs(array($collection, new \Expose\MockLogger()))
+            ->setConstructorArgs(array($collection, new MockLogger()))
             ->setMethods(array('sendNotification'))
             ->getMock();
 
@@ -390,14 +399,14 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testThresholdHigherThenImpact() {
-        $filter = new \Expose\Filter();
+        $filter = new Filter();
         $filter->setImpact(5);
 
-        $collection   = new \Expose\FilterCollection();
+        $collection   = new FilterCollection();
         $collection->addFilter($filter);
 
         $manager_mock = $this->getMockBuilder('\\Expose\\Manager')
-            ->setConstructorArgs(array($collection, new \Expose\MockLogger()))
+            ->setConstructorArgs(array($collection, new MockLogger()))
             ->setMethods(array('sendNotification'))
             ->getMock();
 

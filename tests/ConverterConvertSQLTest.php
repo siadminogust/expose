@@ -1,8 +1,10 @@
 <?php
 
-namespace Expose\Converter;
+namespace Tests\Expose\Converter;
 
-class ConvertSQLTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ConvertSQLTest extends TestCase
 {
 
     /**

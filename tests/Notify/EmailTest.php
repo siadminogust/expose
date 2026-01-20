@@ -1,14 +1,17 @@
 <?php
 
-namespace Expose\Notify;
+namespace Tests\Expose\Notify;
 
-class EmailTest extends \PHPUnit_Framework_TestCase
+use Expose\Notify\Email;
+use PHPUnit\Framework\TestCase;
+
+class EmailTest extends TestCase
 {
 	private $email = null;
 
-	public function setUp()
+	public function setUp(): void
 	{
-		$this->email = new \Expose\Notify\Email();
+		$this->email = new Email();
 	}
 
 	/**
@@ -36,6 +39,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSetInvalidEmailToAddress()
 	{
+        $this->expectException(\InvalidArgumentException::class);
 		$email = 'invalidemail';
 		$this->email->setToAddress($email);	
 	}
@@ -65,6 +69,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSetInvalidEmailFromAddress()
 	{
+        $this->expectException(\InvalidArgumentException::class);
 		$email = 'invalidemail';
 		$this->email->setFromAddress($email);	
 	}

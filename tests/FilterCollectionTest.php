@@ -1,15 +1,19 @@
 <?php
 
-namespace Expose;
+namespace Tests\Expose;
 
-class FilterConnectionTest extends \PHPUnit_Framework_TestCase
+use Expose\Filter;
+use Expose\FilterCollection;
+use PHPUnit\Framework\TestCase;
+
+class FilterConnectionTest extends TestCase
 {
     /**
      * @var \Expose\FilterCollection
      */
     private $collection = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->collection = new FilterCollection();
     }

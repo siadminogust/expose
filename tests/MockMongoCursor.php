@@ -1,13 +1,13 @@
 <?php
 
-namespace Expose;
+namespace Tests\Expose;
 
 /**
  * Mock MongoCursor used for testing
  */
 class MockMongoCursor implements \Iterator
 {
-    private $data = array();
+    private $data = [];
     private $position = 0;
 
     public function __construct($data)

@@ -1,14 +1,17 @@
 <?php
 
-namespace Expose;
+namespace Tests\Expose;
 
-class FilterTest extends \PHPUnit_Framework_TestCase
+use Expose\Filter;
+use PHPUnit\Framework\TestCase;
+
+class FilterTest extends TestCase
 {
     private $filter = null;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->filter = new \Expose\Filter();
+        $this->filter = new Filter();
     }
 
     /**

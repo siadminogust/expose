@@ -1,10 +1,14 @@
 <?php
 
-namespace Expose;
+namespace Tests\Expose;
+
+use Expose\Queue\Mongo;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 include_once 'MockMongoCollection.php';
 
-class QueueTest extends \PHPUnit_Framework_TestCase
+class QueueTest extends TestCase
 {
     private $queue = null;
 
@@ -12,17 +16,19 @@ class QueueTest extends \PHPUnit_Framework_TestCase
      * Get a mock of the Queue object that returns the given results
      * 
      * @param mixed $return Return data
-     * @return Mocked object
+     * @return MockObject object
      */
     public function getQueueMock($return)
     {
-        $collection = new \Expose\MockMongoCollection($return);
 
-        $mock = $this->getMock('\\Expose\\Queue\\Mongo', array('getCollection'));
-        $mock->expects($this->once())
-            ->method('getCollection')
-            ->will($this->returnValue($collection));
-        
+        $collection = new MockMongoCollection($return);
+
+        $mock = $this->getMockBuilder(Mongo::class)
+                    ->onlyMethods(['getCollection'])
+                    ->getMock();
+        $mock->method('getCollection')
+            ->willReturn($collection);
+
         return $mock;
     }
 
@@ -36,7 +42,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
     {
         $adapter = new \stdClass();
         $adapter->foo = 'test';
-        $queue = new \Expose\Queue\Mongo($adapter);
+        $queue = new Mongo($adapter);
 
         $this->assertEquals(
             $queue->getAdapter(),
@@ -55,7 +61,7 @@ class QueueTest extends \PHPUnit_Framework_TestCase
         $adapter = new \stdClass();
         $adapter->foo = 'test';
         
-        $queue = new \Expose\Queue\Mongo();
+        $queue = new Mongo();
         $queue->setAdapter($adapter);
 
         $this->assertEquals(
@@ -71,17 +77,17 @@ class QueueTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPendingRecords()
     {
-        $result = array(
-            array(
+        $result = [
+            [
                 '_id' => '12345',
-                'data' => array(
-                    'POST' => array('test' => 'foo')
-                ),
+                'data' => [
+                    'POST' => ['test' => 'foo']
+                ],
                 'remote_ip' => '127.0.0.1',
                 'datetime' => time(),
-                'processed' => false
-            )
-        );
+                'processed' => false,
+            ]
+        ];
 
         $queue = $this->getQueueMock($result);
         $results = $queue->getPending();

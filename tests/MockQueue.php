@@ -1,8 +1,10 @@
 <?php
 
-namespace Expose\Queue;
+namespace Tests\Expose;
 
-class MockQueue extends \Expose\Queue
+use Expose\Queue;
+
+class MockQueue extends Queue
 {
     public function getPending($limit)
     {

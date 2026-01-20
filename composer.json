@@ -30,7 +30,8 @@
     },
     "autoload": {
         "psr-0": {
-            "Expose": "src/"
+            "Expose": "src/",
+            "Tests\\Expose\\": "tests/"
         }
     }
 }
